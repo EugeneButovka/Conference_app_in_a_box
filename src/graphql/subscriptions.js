@@ -73,8 +73,19 @@ export const onDeleteTalk = `subscription OnDeleteTalk {
   }
 }
 `;
-export const onCreateComment = `subscription onCreateCommentWithId($talkId: ID!) {
+export const onCreateCommentWithId = `subscription onCreateCommentWithId($talkId: ID!) {
   onCreateCommentWithId(talkId: $talkId) {
+    id
+    talkId
+    message
+    createdAt
+    createdBy
+    deviceId
+  }
+}
+`;
+export const onCreateComment = `subscription onCreateComment {
+  onCreateComment {
     id
     talkId
     message

@@ -4,7 +4,7 @@ import { API, graphqlOperation, Auth } from 'aws-amplify'
 import DeviceInfo from 'react-native-device-info'
 
 import { listCommentsByTalkId } from './graphql/queries'
-import { onCreateComment as OnCreateComment } from './graphql/subscriptions'
+import { onCreateComment } from './graphql/subscriptions'
 import { createComment } from './graphql/mutations'
 import { colors, dimensions, typography } from './theme'
 
@@ -14,12 +14,12 @@ const { width } = Dimensions.get('window')
 export default class Discussion extends Component {
   static navigationOptions = () => ({
     title: "Discussion"
-  })
-  state = { comments: [], message: '', subscribed: false }
-  scroller = React.createRef()
-  subscription = {}
+  });
+  state = { comments: [], message: '', subscribed: false };
+  scroller = React.createRef();
+  subscription = {};
   async componentDidMount() {
-    this.subscribe()
+    this.subscribe();
     AppState.addEventListener('change', this.handleAppStateChange)
 
     const { navigation: { state: { params }}} = this.props
@@ -40,7 +40,7 @@ export default class Discussion extends Component {
       console.log('error fetching comments: ', err)
     }
     try {
-      const { username } = await Auth.currentAuthenticatedUser()
+      const { username } = await Auth.currentAuthenticatedUser();
       this.setState({ username })
     } catch (err) { console.log('error fetching user info: ', err)}
   }
@@ -49,40 +49,48 @@ export default class Discussion extends Component {
       this.subscribe()
     }
     if (appState === 'background') {
-      this.setState({ subscribed: false })
-      this.unsubscribe()
+      this.setState({ subscribed: false });
+      this.unsubscribe();
     }
-  }
+  };
+  
   subscribe() {
-    if (this.state.subscribed) return
-    const { navigation: { state: { params }}} = this.props
+    console.log('this.state.subscribed', this.state.subscribed);
+    if (this.state.subscribed) return;
+    const { navigation: { state: { params }}} = this.props;
+    console.log('subscribed', 'talkId', params.id);
     this.subscription = API.graphql(
-      graphqlOperation(OnCreateComment, { talkId: params.id })
+      graphqlOperation(onCreateComment, { talkId: params.id })
     )
     .subscribe({
       next: data => {
-        const { value: { data: { onCreateCommentWithId }}} = data
-        if (onCreateCommentWithId.deviceId === DEVICE_ID) return
+        console.log('data sub', data);
+        const { value: { data: { onCreateComment }}} = data
+        if (onCreateComment.deviceId === DEVICE_ID) return
         const comments = [
           ...this.state.comments,
-          onCreateCommentWithId
-        ]
+          onCreateComment
+        ];
         this.setState({ comments })
         setTimeout(() => {
           this.scroller.current.scrollToEnd()
         }, 50)
       }
-    })
+    });
     this.setState({ subscribed: true })
   }
+  
   unsubscribe = () => {
+    console.log('unsubscribed');
     this.subscription.unsubscribe()
     this.setState({ subscribed: false })
-  }
+  };
+  
   componentWillUnmount() {
-    this.unsubscribe()
+    this.unsubscribe();
     AppState.removeEventListener('change', this.handleAppStateChange)
   }
+  
   createMessage = async () => {
     if (!this.state.message) return
     const { navigation: { state: { params }}} = this.props

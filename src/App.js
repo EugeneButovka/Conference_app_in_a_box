@@ -42,10 +42,10 @@ const TabNavigator = createBottomTabNavigator({
       return <Icon color={tintColor} size={20} name='user' />
     }
   })
-})
+});
 
 class TabNavWithProps extends React.Component {
-  static router = TabNavigator.router
+  static router = TabNavigator.router;
   render() {
     return(
       <TabNavigator screenProps={{...this.props}} {...this.props}  />
@@ -53,7 +53,7 @@ class TabNavWithProps extends React.Component {
   }
 }
 
-const App = createAppContainer(TabNavWithProps)
+const App = createAppContainer(TabNavWithProps);
 
 const theme = {
   ...AmplifyTheme,
@@ -69,12 +69,43 @@ const theme = {
     ...AmplifyTheme.buttonDisabled,
     backgroundColor: colors.primaryOpaque(0.6)
   }
-}
+};
+
+const signUpConfig = {
+  hideAllDefaults: true,
+  signUpFields: [
+    {
+      label:"Username",
+      key:"username",
+      required: true,
+      displayOrder: 1,
+      type: 'username',
+      custom: false
+    },
+    {
+      label:"Email",
+      key:"email",
+      required: true,
+      displayOrder: 2,
+      type: 'email',
+      custom: false
+    },
+    {
+      label:"Password",
+      key:"password",
+      required: true,
+      displayOrder: 3,
+      type: 'password',
+      custom: false
+    }
+  ],
+  hiddenDefaults: ['phone_number']
+};
 
 class AppWithAuth extends React.Component {
   state = {
     signedIn: true
-  }
+  };
   async componentDidMount() {
     try {
       await Auth.currentAuthenticatedUser()
@@ -91,7 +122,7 @@ class AppWithAuth extends React.Component {
     })
   }
   render() {
-    const AppComponent = withAuthenticator(App, null, null, null, theme)
+    const AppComponent = withAuthenticator(App,null/*{ usernameAttributes: 'email' }*/, null, null, theme, signUpConfig);
     return (
       <View style={styles.appContainer}>
         {!this.state.signedIn && <Logo />}

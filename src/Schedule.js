@@ -54,7 +54,7 @@ class Schedule extends Component {
           {
             talkData.map((talk, i) => (
               <TouchableOpacity
-                key={i} 
+                key={i}
                 onPress={
                   () => this.props.navigation.push('Talk', talk)
                 }
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderTopColor: "rgba(255, 255, 255, .2)",
     borderBottomColor: "rgba(255, 255, 255, .2)",
-    left: 0, 
+    left: 0,
     bottom: -1
   },
   listContainer: {
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
   },
   timeContainer: {
-    backgroundColor: "#ddd",
+    //backgroundColor: "#ddd",
     paddingHorizontal: 20,
     paddingVertical: 15,
     borderBottomLeftRadius: 15,
