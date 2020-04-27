@@ -110,6 +110,7 @@ class AppWithAuth extends React.Component {
     try {
       await Auth.currentAuthenticatedUser()
       this.setState({ signedIn: true })
+      console.log('user is signed in')
     } catch (err) { console.log('user not signed in') }
     Hub.listen('auth', (data) => {
       const { payload: { event } } = data
